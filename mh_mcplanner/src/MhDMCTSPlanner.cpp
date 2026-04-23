@@ -124,10 +124,30 @@ namespace dmce {
                                                 MCState&     state,
                                                 double       idleValue) const
     {
+        // 1. Get raw entropy drop (percentage of total map that was discovered)
         double entropy_before = state.map.getRelativeEntropy();
         actionPtr->simulate(state, idleValue);
         double entropy_after  = state.map.getRelativeEntropy();
-        return entropy_before - entropy_after;
+        double raw_gain = entropy_before - entropy_after;
+
+        // 2. Dynamically calculate the maximum theoretical gain based on hardcoded sensor range
+        double sensor_radius = 8.0; 
+        double res = state.map.getResolution();
+        
+        // Prevent division by zero if resolution is zero (edge case protection)
+        if (res <= 0.0) return 0.0;
+
+        double total_map_cells = (state.map.getLength().x() / res) * (state.map.getLength().y() / res);
+        double footprint_cells = (M_PI * sensor_radius * sensor_radius) / (res * res);
+        
+        // Maximum percentage of the map that could possibly be cleared in one step
+        double max_theoretical_gain = footprint_cells / total_map_cells;
+
+        // 3. Normalize to [0, 1] bounds
+        double normalized_gain = raw_gain / (max_theoretical_gain + 1e-9);
+
+        // 4. Clamp to 1.0 (prevents floating point errors from pushing it to 1.000001)
+        return std::min(1.0, normalized_gain);
     }
 
     // =========================================================================
