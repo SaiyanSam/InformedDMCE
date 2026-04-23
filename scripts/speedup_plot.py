@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,12 +7,14 @@ import scienceplots
 
 # Speedup data for T75
 data = {
-		"Ours":						np.array([1.00, 2.20, 2.84, 3.23]),
-		"Ours (uncoord.)":			np.array([1.00, 2.17, 2.89, 3.85]),
+		"DMCE":						np.array([1.00, 2.20, 2.84, 3.23]),
+		"DMCE (uncoord.)":			np.array([1.00, 2.17, 2.89, 3.85]),
 		#"Umari and Mukhopadhyay":	np.array([1.00, None, None, None]),
 		#  "Yu et al.":				np.array([1.00, 1.47, 1.94, 2.02]), # pre-patch
 		#"Greedy":					np.array([1.00, 2.07, 3.38, 3.38]),
-		"Yu et al.":				np.array([1.00, 1.65, 2.06, 2.51])
+		"Yu et al.":				np.array([1.00, 1.65, 2.06, 2.51]),
+		#Edit for skyline 
+		"Skyline":                  np.array([1.00, 2.45, 3.15, 3.70])
 	}
 
 

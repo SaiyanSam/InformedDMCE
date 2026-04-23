@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Warning: this is a very dumb script.
 # A sane person would use laspy's built-in functionality to read the points in chunks and

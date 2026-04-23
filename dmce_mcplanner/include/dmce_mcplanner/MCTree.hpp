@@ -67,6 +67,9 @@ namespace dmce {
 		 */
 		unsigned int getNRollouts() const;
 
+		// Used for skyline package fixes for inheritance
+		virtual ~MCTree() = default;
+
 	private:
 
 		MCActionGenerator actionGenerator_;

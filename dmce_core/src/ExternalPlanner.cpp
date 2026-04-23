@@ -26,4 +26,18 @@ namespace dmce {
 	void ExternalPlanner::signalNavigationFailure() {
 		latestPlan_.clear();
 	}
+
+	// Block for Skyline
+    void ExternalPlanner::setSkylineGoal(double x, double y) {
+        geometry_msgs::PoseStamped goal_pose;
+        goal_pose.header.frame_id = "map";
+        goal_pose.header.stamp = ros::Time::now();
+        goal_pose.pose.position.x = x;
+        goal_pose.pose.position.y = y;
+        goal_pose.pose.orientation.w = 1.0; // Point straight ahead
+
+        // Overwrite the robot's current plan with the new Skyline target
+        latestPlan_.clear();
+        latestPlan_.push_back(goal_pose);
+    }
 }

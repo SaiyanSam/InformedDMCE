@@ -1,0 +1,21 @@
+<launch>
+  <arg name="plannerType"    default="dmcts"/>
+  <arg name="nRobots"        default="5"/>
+  <arg name="run_id"         default="0"/>
+  <arg name="map_resolution" default="0.16"/>
+  <arg name="fov_deg"        default="360.0"/> 
+  <arg name="max_range"      default="8.0"/>
+  <arg name="num_rays"       default="360"/>   
+
+  <node pkg="swarm_metrics" type="overlap_logger" name="overlap_logger" output="screen">
+    <param name="plannerType"    value="$(arg plannerType)"/>
+    <param name="nRobots"        value="$(arg nRobots)"/>
+    <param name="run_id"         value="$(arg run_id)"/>
+    <param name="map_resolution" value="$(arg map_resolution)"/>
+    <param name="fov_deg"        value="$(arg fov_deg)"/> 
+    <param name="max_range"      value="$(arg max_range)"/>
+    <param name="num_rays"       value="$(arg num_rays)"/> 
+    
+    <param name="free_pixel_threshold" value="0"/> 
+  </node>
+</launch>

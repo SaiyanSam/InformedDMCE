@@ -10,9 +10,9 @@
 
 	<node pkg="dmce_nodes" type="nodeMain" name="PathfindingServer" output="log" args="$(arg robotId) PathfindingServer" if="$(eval arg('launch'))" />
 
-	<node pkg="dmce_nodes" type="nodeMain" name="PlannerServer" output="screen" args="$(arg robotId) PlannerServer" if="$(eval arg('launch'))">
-		<param name="plannerType" type="string" value="$(arg plannerType)" />
-	</node>
+	<node pkg="dmce_nodes" type="nodeMain" name="PlannerServer" output="screen" required="true" args="$(arg robotId) PlannerServer" if="$(eval arg('launch'))">
+        <param name="plannerType" type="string" value="$(arg plannerType)" />
+    </node>
 
 	<node pkg="dmce_nodes" type="nodeMain" name="RobotMapServer" output="screen" args="$(arg robotId) RobotMapServer" if="$(eval arg('launch'))" />
 

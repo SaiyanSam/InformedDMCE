@@ -9,6 +9,7 @@ namespace dmce {
 	 * Data structure representing a world state
 	 * in the Monte Carlo Tree Search.
 	 */
+
 	struct MCState {
 		MCRobotState robot;
 		RobotMap map;

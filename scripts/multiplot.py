@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os, sys, csv
 import getopt
@@ -83,11 +83,12 @@ if __name__ == '__main__':
     dirToScan = ""
     plotArea = True
     labelMap = {
-            "dmcts": "Ours",
-            "mcts": "Ours (uncoord.)",
+            "dmcts": "DMCE",
+            "mcts": "DMCE (uncoord.)",
             "rrt": "Umari and Mukhopadhyay",
             "mmpf": "Yu et al.",
-            "cluster": "Greedy"
+            "cluster": "Greedy",
+            "skyline": "Centralised Skyline"
         }
     show_map = True
 

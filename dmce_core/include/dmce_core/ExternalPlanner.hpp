@@ -20,6 +20,8 @@ namespace dmce {
 
 		void signalNavigationFailure() override;
 
+		void setSkylineGoal(double x, double y);
+
 	protected:
 		std::pair<bool, plan_t> getLatestPlan_() override;
 

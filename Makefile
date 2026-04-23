@@ -44,7 +44,7 @@ docker-build:
 
 .PHONY: build-pkg
 build-pkg:
-	${DOCKER_RUN} ${CATKIN_MAKE} dmce
+	${DOCKER_RUN} ${CATKIN_MAKE} all
 
 .PHONY: build-pkg-local
 build-pkg-local:
@@ -61,7 +61,7 @@ bash: xhost-open
 .PHONY: demo
 demo: build-pkg # xhost-open
 	# ${DOCKER_RUN} roslaunch dmce_sim demo.launch
-	roslaunch dmce_sim demo.launch ${ARGS}
+	${DOCKER_RUN} roslaunch dmce_sim demo.launch ${ARGS}
 
 # Run the headless simulation
 .PHONY: sim

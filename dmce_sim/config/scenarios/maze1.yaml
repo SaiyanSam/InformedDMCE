@@ -1,0 +1,16 @@
+# "maze1" scenario
+
+globalMap:
+  scenarioName: "maze1"
+  resolution: 0.07  # [m]
+  groundTruthImage: "$(find dmce_sim)/maps/maze1.png"
+
+
+robot:
+  diameter: 1 # [m]
+  speed: 1    # [m/s]
+  map: # Parameters for the robot's local submap
+    resolution: 1.5 # [m]
+  startingArea:
+    position_x: 0 # [m]
+    position_y: 0 # [m]

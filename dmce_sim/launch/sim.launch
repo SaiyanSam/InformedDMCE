@@ -8,7 +8,7 @@
 	<arg name="restrictComms" default="false" />
 	<arg name="timeMultiplier" default="1" />
 	<arg name="gamma" default="0.8" />
-	<arg name="minRollouts" default="48" />
+	<arg name="minRollouts" default="30" />
 	<arg name="rolloutDepth" default="5" />
 	<arg name="explorationFactor" default="0.2" />
 	<arg name="useActionCaching" default="false" />
@@ -17,10 +17,37 @@
 	<arg name="timeDiscountFactor" default="0.9" />
 	<arg name="reuseBranches" default="true" />
 	<arg name="useLocalReward" default="true" />
+	
+	<arg name="pto_sigma" default="1.0" />
+	<arg name="pto_lambda_risk" default="0.02" />
+	<arg name="pto_decay_age" default="0.3" />
+
+	<!-- MhDMCTSPlanner mode flags.
+	     use_mh:  multi-hop peer state simulation (like DMCTSPlanner)
+	     use_pto: PTO Gaussian reward penalty; step_gain uses new-cell count only
+	     use_occ: occupancy spoofing with PTO Gaussian field (mutually exclusive with use_pto)
+	     With all three false and lambda=0, behaviour is identical to DMCTSPlanner. -->
+	<arg name="use_mh"  default="false" />
+	<arg name="use_pto" default="false" />
+	<arg name="use_occ" default="false" />
 
 	<rosparam file="$(find dmce_sim)/config/sim.yaml" command="load" subst_value="true" />
 	<rosparam file="$(find dmce_sim)/config/scenarios/$(arg scenario).yaml" command="load" subst_value="true" />
+	
+	<!-- Mode flags — written to parameter server so planner reads them correctly.
+	     Previously these were args only and never published, causing the planner
+	     to always use default values regardless of command-line arguments. -->
+	
+	<param name="/mcts/use_mh"            value="$(arg use_mh)" />
+	<param name="/mcts/use_pto"           value="$(arg use_pto)" />
+	<param name="/mcts/use_occ"           value="$(arg use_occ)" />
+
 	<param name="/sim/nRobots" value="$(arg nRobots)" />
+	<param name="/mcts/pto_sigma" value="$(arg pto_sigma)" />
+	<param name="/mcts/pto_lambda_risk" value="$(arg pto_lambda_risk)" />
+	<param name="/mcts/pto_decay_age" value="$(arg pto_decay_age)" />
+
+	<include file="$(find swarm_metrics)/launch/logger.launch.xml" pass_all_args="true" />
 
 	<include file="$(find dmce_sim)/launch/robots.launch" pass_all_args="true" />
 	

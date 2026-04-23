@@ -71,4 +71,3 @@ namespace dmce {
 		pub.publish(msg);
 	}
 };
-

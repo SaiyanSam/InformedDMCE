@@ -53,6 +53,12 @@ add_message_files(
   RobotConnectivity.msg
   FrontierClusters.msg
   NavigationFailureSignal.msg
+  
+  ## Added Multi Hop message components
+  #MultiHopMapUpdate.msg
+  MultiHopGridMap.msg
+  MultiHopPosition.msg
+  MultiHopPlan.msg
 )
 
 ## Generate services in the 'srv' folder

@@ -7,3 +7,4 @@
 *.pem
 *.tar.gz
 **/aws_logs/*
+dmce_sim/logs/

@@ -12,8 +12,8 @@ robot:
   map: # Parameters for the robot's local submap
     resolution: 0.25 # [m]
   startingArea:
-    position_x: -5 # [m]
-    position_y: 2.5 # [m]
+    position_x: -18 # [m]
+    position_y: -22 # [m]
 
 mcts:
   randomDisplacement:

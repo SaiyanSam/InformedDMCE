@@ -1,5 +1,14 @@
 <launch>
-	<include file="$(find dmce_sim)/launch/sim.launch" pass_all_args="true" />
-	
-	<include ns="viz" file="$(find dmce_sim)/launch/viz.launch" />
+    <include file="$(find dmce_sim)/launch/sim.launch" pass_all_args="true" />
+    
+    <include ns="viz" file="$(find dmce_sim)/launch/viz.launch" />
+    
+    <!-- NEW: View overlap metrics logger -->
+    <include file="$(find swarm_metrics)/launch/logger.launch.xml" pass_all_args="true" />
+
+    <group if="$(eval arg('plannerType') == 'skyline')">
+        <node pkg="dmce_skyline" type="skyline_server_node" name="skyline_server" output="screen">
+            <param name="robot_count" value="$(arg nRobots)"/> 
+        </node>
+    </group>
 </launch>
