@@ -35,10 +35,6 @@ namespace dmce {
         ros::param::param<bool>("/mcts/use_occ",            use_occ_,            false);
         ros::param::param<bool>("/mcts/save_debug_images",  save_debug_images_,  false);
 
-        ros::param::param<double>("/mcts/pto_sigma",        pto_sigma_,        1.0);
-        ros::param::param<double>("/mcts/pto_lambda_risk",  pto_lambda_risk_,  0.02);
-        ros::param::param<double>("/mcts/pto_decay_age",    pto_decay_age_,    0.3);
-
         ros::param::param<std::string>("/globalMap/scenarioName", scenario_, "unknown");
 
         params_.useActionCaching = false;
@@ -211,9 +207,12 @@ namespace dmce {
                 double pto_risk = 0.0;
                 for (const auto& pt : pto_field_) {
                     double d2 = std::pow(state.robot.pos.x() - pt.x, 2)
-                              + std::pow(state.robot.pos.y() - pt.y, 2);
-                    pto_risk += pt.weight
-                              * std::exp(-d2 / (2.0 * pto_sigma_ * pto_sigma_));
+                            + std::pow(state.robot.pos.y() - pt.y, 2);
+                    
+                    double point_risk = pt.weight * std::exp(-d2 / (2.0 * pto_sigma_ * pto_sigma_));
+                    
+                    // Take the MAX instead of accumulating the SUM
+                    pto_risk = std::max(pto_risk, point_risk); 
                 }
 
                 total_result += step_gain - (pto_lambda_risk_ * pto_risk);
@@ -299,10 +298,12 @@ namespace dmce {
                             ci >= 0 && ci < map_size(1)) {
                             double d2 = (r * res) * (r * res)
                                       + (c * res) * (c * res);
-                            risk_grid.at<float>(ri, ci) +=
-                                static_cast<float>(
-                                    pt.weight *
-                                    std::exp(-d2 / (2.0 * pto_sigma_ * pto_sigma_)));
+                            
+                            float point_risk = static_cast<float>(
+                                pt.weight * std::exp(-d2 / (2.0 * pto_sigma_ * pto_sigma_)));
+
+                            // Take the MAX for the grid cell
+                            risk_grid.at<float>(ri, ci) = std::max(risk_grid.at<float>(ri, ci), point_risk);
                         }
                     }
                 }
