@@ -38,8 +38,8 @@ namespace dmce {
         // --- PTO parameters ---
         double pto_sigma_        = 1.0;    // [m] Gaussian spread of peer trajectory influence
         double pto_decay_age_    = 0.3;    // Decay factor for plan age (reserved for future use)
-        double pto_decay_future_ = 0.03;   // Decay factor per plan step index
-        double pto_lambda_risk_  = 0.02;   // Penalty weight on PTO risk term
+        double pto_decay_future_ = 0.02;   // Decay factor per plan step index
+        double pto_lambda_risk_  = 0.13;   // Penalty weight on PTO risk term
         double pto_comm_timeout_ = 5.0;    // [s] Ignore peer plans older than this
 
         // --- PTO field ---
