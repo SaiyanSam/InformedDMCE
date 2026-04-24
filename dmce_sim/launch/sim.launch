@@ -19,7 +19,7 @@
 	<arg name="useLocalReward" default="true" />
 	
 	<arg name="pto_sigma" default="1.0" />
-	<arg name="pto_lambda_risk" default="0.13" />
+	<arg name="pto_lambda_risk" default="1.0" />
 	<arg name="pto_decay_age" default="0.3" />
 
 	<!-- MhDMCTSPlanner mode flags.
