@@ -49,6 +49,9 @@
 
 	<include file="$(find dmce_sim)/launch/robots.launch" pass_all_args="true" />
 	
+	<!-- NEW: View overlap metrics logger -->
+    <include file="$(find swarm_metrics)/launch/logger.launch.xml" pass_all_args="true" />
+
 	<include ns="groundStation" file="$(find dmce_sim)/launch/groundStation.launch">
 		<arg name="plannerType" value="$(arg plannerType)" />
 	</include>
