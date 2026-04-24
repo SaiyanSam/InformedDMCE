@@ -28,7 +28,7 @@ robot:
   maxPlanAge: 30 # [s] If a global plan takes longer than this to execute, request a fresh one
   randomiseInitialPosition: true
   restrictComms: $(arg restrictComms) # If true, communications are limited to line-of-sight
-  commsRange: 10000   #15
+  commsRange: 15   #15
   sensorRange: 8   #8
   lidarRayCount: 360
   explorationCompletionThreshold: 0.0001 # [-] Exploration is completed when the fraction of frontier cells in the map falls below this value
