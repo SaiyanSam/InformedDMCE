@@ -7,7 +7,7 @@
   <arg name="max_range"      default="8.0"/>
   <arg name="num_rays"       default="360"/>   
   
-  <arg name="log_cpu"        default="true"/>
+  <arg name="log_cpu"        default="false"/>
 
   <node pkg="swarm_metrics" type="overlap_logger" name="overlap_logger" output="screen">
     <param name="plannerType"    value="$(arg plannerType)"/>
