@@ -6,6 +6,8 @@
   <arg name="fov_deg"        default="360.0"/> 
   <arg name="max_range"      default="8.0"/>
   <arg name="num_rays"       default="360"/>   
+  
+  <arg name="log_cpu"        default="true"/>
 
   <node pkg="swarm_metrics" type="overlap_logger" name="overlap_logger" output="screen">
     <param name="plannerType"    value="$(arg plannerType)"/>
@@ -15,11 +17,10 @@
     <param name="fov_deg"        value="$(arg fov_deg)"/> 
     <param name="max_range"      value="$(arg max_range)"/>
     <param name="num_rays"       value="$(arg num_rays)"/> 
-    
     <param name="free_pixel_threshold" value="0"/> 
   </node>
 
-  <node pkg="swarm_metrics" type="cpu_logger" name="cpu_logger" output="screen">
+  <node if="$(arg log_cpu)" pkg="swarm_metrics" type="cpu_logger" name="cpu_logger" output="screen">
     <param name="plannerType"    value="$(arg plannerType)"/>
     <param name="nRobots"        value="$(arg nRobots)"/>
     
