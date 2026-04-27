@@ -25,13 +25,23 @@
     <param name="nRobots"        value="$(arg nRobots)"/>
     
     <rosparam param="process_keywords">
-      - "MhDMCTSPlanner"
-      - "gzserver"
-      - "gzclient"
-      - "move_base"
+      - "FrontierClusterServer"
+      - "PlannerServer"
+      - "RobotMapServer"
+      - "PathFindingServer"
+      - "NavigationServer"
+      - "SensorEmulatorServer"
+      - "ConnectivityServer"
+      
+      - "GlobalMapServer"
+      - "LoggingServer"
+      - "ClockServer"
+      
+      - "rviz"
+      - "RobotMarkerServer"
+      
       - "overlap_logger"
       - "cpu_logger"
-      - "map_server"
       - "rosmaster"
     </rosparam>
   </node>
