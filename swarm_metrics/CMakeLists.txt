@@ -22,10 +22,16 @@ include_directories(
 )
 
 add_executable(overlap_logger src/overlap_logger.cpp)
+add_executable(cpu_logger src/cpu_logger.cpp)
+
 
 target_link_libraries(overlap_logger
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
+)
+
+target_link_libraries(cpu_logger 
+  ${catkin_LIBRARIES}
 )
 
 # Tell CMake to wait for message headers to be generated first!
