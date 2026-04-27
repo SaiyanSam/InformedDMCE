@@ -18,4 +18,21 @@
     
     <param name="free_pixel_threshold" value="0"/> 
   </node>
+
+  <node pkg="swarm_metrics" type="cpu_logger" name="cpu_logger" output="screen">
+    <param name="plannerType"    value="$(arg plannerType)"/>
+    <param name="nRobots"        value="$(arg nRobots)"/>
+    
+    <rosparam param="process_keywords">
+      - "MhDMCTSPlanner"
+      - "gzserver"
+      - "gzclient"
+      - "move_base"
+      - "overlap_logger"
+      - "cpu_logger"
+      - "map_server"
+      - "rosmaster"
+    </rosparam>
+  </node>
+
 </launch>
