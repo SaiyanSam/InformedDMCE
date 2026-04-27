@@ -22,11 +22,20 @@ public:
 
         // List of process keywords to track. Can override in launch file.
         std::vector<std::string> default_procs = {
-            "gzserver", 
-            "gzclient", 
-            "MhDMCTSPlanner", 
-            "move_base", 
+            "FrontierClusterServer",
+            "PlannerServer",
+            "RobotMapServer",
+            "PathFindingServer",
+            "NavigationServer",
+            "SensorEmulatorServer",
+            "ConnectivityServer",
+            "GlobalMapServer",
+            "LoggingServer",
+            "ClockServer",
+            "rviz",
+            "RobotMarkerServer",
             "overlap_logger",
+            "cpu_logger",
             "rosmaster"
         };
         pnh_.param("process_keywords", process_keywords_, default_procs);
@@ -35,7 +44,7 @@ public:
         start_time_ = ros::Time::now().toSec();
         timer_ = nh_.createTimer(ros::Duration(1.0 / log_frequency_), &CpuLogger::timerCb, this);
         
-        ROS_INFO("[CpuLogger] Started logging CPU load at %.1f Hz", log_frequency_);
+        ROS_INFO("[CpuLogger] Started logging CPU & Load at %.1f Hz", log_frequency_);
     }
 
     ~CpuLogger() {
@@ -69,7 +78,7 @@ private:
         for (const auto& kw : process_keywords_) {
             log_ << "," << kw << "_%";
         }
-        log_ << ",other_%\n";
+        log_ << ",other_%,load_avg\n";
         log_.flush();
     }
 
@@ -78,54 +87,61 @@ private:
         for (const auto& kw : process_keywords_) usages[kw] = 0.0;
         usages["other"] = 0.0;
 
-        // %cpu in ps gives the average CPU utilization over the lifetime of the process, 
-        // which provides a highly stable metric for simulation profiling.
-        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("ps -eo %cpu,command", "r"), pclose);
+        // Force terminal width to 512 columns so ROS process names are never truncated.
+        // Run 'top' twice with a 0.1s delay. The SECOND output is the instantaneous CPU usage.
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen("env COLUMNS=512 top -b -n 2 -d 0.1 -c", "r"), pclose);
         if (!pipe) {
-            ROS_ERROR("[CpuLogger] popen() failed to execute ps command!");
+            ROS_ERROR("[CpuLogger] popen() failed to execute top command!");
             return usages;
         }
 
-        char line[512];
-        bool first_line = true;
+        char line[1024];
+        int batch = 0;
         while (fgets(line, sizeof(line), pipe.get()) != nullptr) {
-            if (first_line) { 
-                first_line = false; 
-                continue; // Skip header
+            std::string sline(line);
+            
+            // Count how many times we see the header to know when the second batch starts
+            if (sline.find("PID USER") != std::string::npos) {
+                batch++;
+                continue;
             }
             
-            std::string sline(line);
-            if (sline.empty()) continue;
+            // Skip everything until we are in the second (instantaneous) batch
+            if (batch < 2) continue;
 
             // Trim leading whitespace
             size_t start = sline.find_first_not_of(" \t");
             if (start == std::string::npos) continue;
             sline = sline.substr(start);
 
-            // Separate CPU value from the command string
-            size_t space_pos = sline.find_first_of(" \t");
-            if (space_pos == std::string::npos) continue;
+            std::stringstream ss(sline);
+            std::string pid, user, pr, ni, virt, res, shr, s, cpu, mem, time;
+            
+            // Extract the standard 'top' columns
+            if (!(ss >> pid >> user >> pr >> ni >> virt >> res >> shr >> s >> cpu >> mem >> time)) {
+                continue; // Not a valid process line
+            }
+            
+            // The rest of the line is the actual command running
+            std::string cmd;
+            std::getline(ss, cmd); 
 
             double cpu_val = 0.0;
             try {
-                cpu_val = std::stod(sline.substr(0, space_pos));
+                cpu_val = std::stod(cpu);
             } catch (...) { continue; }
 
             if (cpu_val <= 0.01) continue; // Ignore idle processes
 
-            std::string cmd = sline.substr(space_pos + 1);
             bool matched = false;
-
-            // Group by requested keywords
             for (const auto& kw : process_keywords_) {
                 if (cmd.find(kw) != std::string::npos) {
                     usages[kw] += cpu_val;
                     matched = true;
-                    break; // Map to the first matched keyword only
+                    break;
                 }
             }
             
-            // Sum everything else using significant CPU into "other"
             if (!matched && cpu_val > 1.0) { 
                 usages["other"] += cpu_val;
             }
@@ -137,13 +153,23 @@ private:
         double current_time = ros::Time::now().toSec();
         double elapsed_t = current_time - start_time_;
 
+        // 1. Get the CPU usage array
         std::map<std::string, double> current_usages = getCpuUsages();
 
+        // 2. Read the 1-minute load average from the OS
+        double load_avg = 0.0;
+        std::ifstream load_file("/proc/loadavg");
+        if (load_file.is_open()) {
+            load_file >> load_avg; 
+            load_file.close();
+        }
+
+        // 3. Write everything to the CSV
         log_ << std::fixed << std::setprecision(2) << elapsed_t;
         for (const auto& kw : process_keywords_) {
             log_ << "," << current_usages[kw];
         }
-        log_ << "," << current_usages["other"] << "\n";
+        log_ << "," << current_usages["other"] << "," << load_avg << "\n";
         log_.flush();
     }
 
