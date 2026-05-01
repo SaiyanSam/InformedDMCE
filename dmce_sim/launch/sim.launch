@@ -6,7 +6,7 @@
 	<arg name="nRobots" default="4" />
 	<arg name="scenario" default="urban2" />
 	<arg name="restrictComms" default="false" />
-	<arg name="commsRange" default="false" />
+	<arg name="commsRange" default="15" />
 	<arg name="timeMultiplier" default="1" />
 	<arg name="gamma" default="0.8" />
 	<arg name="minRollouts" default="30" />
