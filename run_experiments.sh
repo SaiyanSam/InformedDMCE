@@ -1,9 +1,5 @@
 #!/bin/bash
 
-TOTAL_RUNS=5
-Scenario=urban2
-num=7
-
 cleanup_ros() {
     echo "Cleaning ROS/Gazebo processes..."
 
@@ -24,17 +20,38 @@ cleanup_ros() {
     sleep 5
 }
 
-for ((i=1; i<=TOTAL_RUNS; i++))
+
+TOTAL_RUNS=10
+num=5
+
+SCENARIOS=("open" "urban2","maze1")
+LAMBDAS=(0.2 0.3 0.5 0.8 1 1.5 2 3 5 10)
+
+
+cur=1
+
+for Scenario in "${SCENARIOS[@]}"
 do
-    echo "=========================================="
-    echo " Starting Simulation Run $i of $TOTAL_RUNS"
-    echo "=========================================="
+    for lambda in "${LAMBDAS[@]}"
+    do
+        for ((i=1; i<=TOTAL_RUNS; i++))
+        do
+            echo "=========================================="
+            echo " Starting Simulation Run $cur"
+            echo " Scenario: $Scenario"
+            echo " Lambda: $lambda"
+            echo " Repeat: $i of $TOTAL_RUNS"
+            echo "=========================================="
 
-    timeout --foreground -s SIGINT -k 10s 10s \
-    make demo ARGS="nRobots:=$num plannerType:=mh_dmcts scenario:=$Scenario restrictComms:=True use_pto:=True use_occ:=True"
+            timeout --foreground -s SIGINT -k 10s 600s \
+            make demo ARGS="nRobots:=$num plannerType:=mh_dmcts scenario:=$Scenario restrictComms:=True use_pto:=True use_occ:=True pto_lambda_risk:=$lambda"
 
-    cleanup_ros
+            cleanup_ros
 
-    echo "Run $i stopped/finished. Waiting 5 seconds for ROS to clean up..."
-    sleep 5
+            echo "Run $cur stopped/finished. Waiting 5 seconds for ROS to clean up..."
+            sleep 5
+
+            ((cur++))
+        done
+    done
 done
